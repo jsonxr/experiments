@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+const path = require('path')
+const homedir = require('os').homedir();
+const fs = require('fs/promises')
+const f = require('fs')
+
+const version = '1.16.5';
+const major = version.substring(0, version.lastIndexOf('.'));
+
+const minecraftData = path.join(homedir, 'Library/Application Support/minecraft');
+const objectsDir = path.resolve(path.join(minecraftData, 'assets/objects'));
+
+const execute = async () => {
+  const jsonFile = path.resolve(path.join(minecraftData, `assets/indexes/${major}.json`));
+  const text = await fs.readFile(jsonFile);
+  const config = JSON.parse(text);
+  const objects = config.objects;
+
+
+
+  for (var filePath in objects) {
+    // const match = (filePath === 'minecraft/sounds.json') ||
+    //   /\/(?:sounds)\//.test(filePath)
+    // if (!match) continue;
+
+    console.log(filePath);
+    // if (!/\/(?:ambient|block|damage|dig|enchant|entity|event|fire|fireworks|item|liquid|minecart|mob|music|note|portal|random|records|step|title|ui)\//.test(filePath)) continue
+    const copyPath = `minecraft/assets/${filePath}`;//.replace('minecraft/sounds/', 'minecraft/sounds/')
+
+    const hash = objects[filePath].hash
+    const objectPath = path.resolve(path.join(objectsDir, hash.substring(0, 2), hash));
+    f.mkdirSync(copyPath.substring(0, copyPath.lastIndexOf('/')), { recursive: true });
+    console.log(objectPath, '->', copyPath)
+    f.copyFileSync(objectPath, copyPath)
+  }
+
+}
+
+execute();

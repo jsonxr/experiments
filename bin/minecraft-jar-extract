@@ -1,0 +1,8 @@
+#!/bin/sh
+
+VERSION=1.17.1
+unzip ~/Library/Application\ Support/minecraft/versions/$VERSION/$VERSION.jar -d minecraft
+rm minecraft/*.class
+pushd minecraft
+rm -rf net META-INF com log4j2.xml assets/.mcassetsroot data/.mcassetsroot
+popd
